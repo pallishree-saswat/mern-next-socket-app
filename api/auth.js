@@ -7,12 +7,14 @@ const bcrypt = require("bcryptjs");
 const isEmail = require("validator/lib/isEmail");
 const authMiddleware = require("../middleware/authMiddleware");
 
-
 router.get("/", authMiddleware, async (req, res) => {
   const { userId } = req;
 
   try {
     const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
 
     const userFollowStats = await FollowerModel.findOne({ user: userId });
 
